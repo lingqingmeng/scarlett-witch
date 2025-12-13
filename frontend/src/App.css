@@ -1,0 +1,14 @@
+#root {
+  min-height: 100vh;
+}
+
+.layout main {
+  padding: 24px 0 48px;
+}
+
+.markdown-body {
+  background: #ffffff;
+  border: 1px solid #ececf2;
+  border-radius: 12px;
+  padding: 16px 20px;
+}

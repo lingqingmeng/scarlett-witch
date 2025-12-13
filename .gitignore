@@ -1,2 +1,9 @@
 .env
 node_modules
+
+.npm-cache/
+**/.npm-cache/
+.npm
+.pnpm-store
+.npmrc
+.npm-emptyrc

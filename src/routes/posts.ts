@@ -51,8 +51,8 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 router.put('/:slug', requireAuth, async (req, res) => {
-  const payload = postSchema.parse({ ...req.body, slug: req.params.slug });
-  const post = await savePost(payload, req.user?.id);
+  const payload = postSchema.partial({ slug: true }).parse({ ...req.body, slug: req.params.slug });
+  const post = await savePost({ ...payload, slug: req.params.slug }, req.user?.id);
   return res.json({ post });
 });
 

@@ -4,13 +4,29 @@ import sequelize from '../config/database';
 import User, { UserRole } from '../models/User';
 
 const parseArgs = (): Record<string, string> => {
-  return process.argv.slice(2).reduce<Record<string, string>>((acc, arg) => {
-    const [key, value] = arg.split('=');
-    if (key.startsWith('--') && value) {
-      acc[key.replace('--', '')] = value;
+  const argv = process.argv.slice(2);
+  const args: Record<string, string> = {};
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+    if (!token.startsWith('--')) continue;
+
+    const [rawKey, inlineValue] = token.split('=');
+    const key = rawKey.replace(/^--/, '');
+
+    if (inlineValue) {
+      args[key] = inlineValue;
+      continue;
     }
-    return acc;
-  }, {});
+
+    const next = argv[i + 1];
+    if (next && !next.startsWith('--')) {
+      args[key] = next;
+      i += 1; // skip consumed value
+    }
+  }
+
+  return args;
 };
 
 const main = async () => {
