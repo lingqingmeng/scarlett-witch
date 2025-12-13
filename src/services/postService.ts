@@ -147,7 +147,11 @@ export const savePost = async (
     authorId: existingMeta?.authorId ?? authorId,
   };
 
-  const fileContents = matter.stringify(payload.content, metadata);
+  const serializedMeta = Object.fromEntries(
+    Object.entries(metadata).filter(([, value]) => value !== undefined)
+  );
+
+  const fileContents = matter.stringify(payload.content, serializedMeta);
   await fs.writeFile(filePath, `${fileContents.trim()}
 `, 'utf8');
   return { ...metadata, content: payload.content };

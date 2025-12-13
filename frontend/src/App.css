@@ -12,3 +12,46 @@
   border-radius: 12px;
   padding: 16px 20px;
 }
+
+.post-hero {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.post-hero__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-hero__title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.post-hero__subtitle {
+  margin: 0;
+  color: #5b5b5b;
+  font-size: 1rem;
+}
+
+.post-hero__image {
+  width: 360px;
+  max-width: 45vw;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .post-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .post-hero__image {
+    width: 100%;
+    max-width: 360px;
+  }
+}

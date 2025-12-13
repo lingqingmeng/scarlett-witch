@@ -2,6 +2,7 @@ import { Alert, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { listPublishedPosts } from '../api/posts';
 import PostList from '../components/PostList';
+import { branding } from '../config/branding';
 
 export default function HomePage() {
   const { data, isLoading, error } = useQuery({
@@ -15,6 +16,18 @@ export default function HomePage() {
 
   return (
     <div>
+      <div className="post-hero">
+        <div className="post-hero__text">
+          <h2 className="post-hero__title">{branding.title}</h2>
+          <p className="post-hero__subtitle">{branding.subtitle}</p>
+        </div>
+        <img
+          className="post-hero__image"
+          src={branding.image}
+          alt={branding.title}
+          loading="lazy"
+        />
+      </div>
       <Title order={2} mb="md">
         Blog
       </Title>
