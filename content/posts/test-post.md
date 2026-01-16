@@ -2,7 +2,7 @@
 title: Test Post
 slug: test-post
 summary: My first Post
-status: draft
+status: published
 tags: []
 createdAt: '2025-12-13T15:17:24.303Z'
 updatedAt: '2025-12-13T15:17:24.303Z'

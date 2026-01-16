@@ -41,7 +41,7 @@ All posts live in `content/posts` as Markdown files, with YAML front matter desc
   - `title: "Wanda Pawlowska"`
   - `subtitle: "Web3 Marketing & PR · Content Creation · Events"`
 - The hero only renders on the homepage (`/`) and not on individual posts. Minimal CSS lives in `frontend/src/App.css` (selectors prefixed with `.post-hero`).
-- Backend defaults to port `4000`; frontend dev defaults to `5173` with `VITE_API_BASE_URL` falling back to `http://localhost:4000/api`.
+- Backend defaults to port `5555`; frontend dev defaults to `5173` with `VITE_API_BASE_URL` falling back to `http://localhost:5555/api`.
 
 ## Scripts
 

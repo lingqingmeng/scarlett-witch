@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Default backend port is 4000; override with VITE_API_BASE_URL when set.
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
-
+console.log("API_BASE_URL: ",API_BASE_URL);
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: false,
