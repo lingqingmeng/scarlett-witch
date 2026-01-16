@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { fetchCurrentUser, login as loginApi, logout as logoutApi } from '../api/auth';
+import luciaClient from '../lib/luciaClient';
 import type { LoginResponse, User } from '../api/auth';
 
 type AuthContextValue = {
@@ -54,6 +55,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await loginApi({ email, password });
     persistTokens(data);
     setUser(data.user);
+    try {
+      // Fire-and-forget login tracking; do not block auth flow on failure.
+      luciaClient.userInfo(data.user.email, {
+        contact: data.user.email,
+      });
+    } catch (error) {
+      // Swallow tracking errors to avoid impacting login UX.
+      // eslint-disable-next-line no-console
+      console.warn('Lucia tracking failed', error);
+    }
   };
 
   const logout = async () => {

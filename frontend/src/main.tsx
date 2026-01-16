@@ -7,6 +7,7 @@ import '@mantine/core/styles.css';
 import App from './App';
 import { AuthProvider } from './auth/AuthProvider';
 import './index.css';
+import './lib/luciaClient';
 
 const queryClient = new QueryClient();
 
