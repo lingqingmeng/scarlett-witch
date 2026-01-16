@@ -38,9 +38,14 @@ export function Layout() {
                   </Button>
                 </>
               ) : (
-                <Button component={Link} to="/login" size="xs">
-                  Login
-                </Button>
+                <>
+                  <Button component={Link} to="/login" size="xs" variant="default">
+                    Login
+                  </Button>
+                  <Button component={Link} to="/signup" size="xs">
+                    Sign up
+                  </Button>
+                </>
               )}
             </Group>
           </Group>

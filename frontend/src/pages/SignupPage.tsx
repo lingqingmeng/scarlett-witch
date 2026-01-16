@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Alert, Button, Paper, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { register } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
 
-export default function LoginPage() {
+export default function SignupPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,10 +20,11 @@ export default function LoginPage() {
     setSubmitting(true);
     setError(null);
     try {
+      await register({ email, password, role: 'editor' });
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError('Invalid credentials');
+      setError('Unable to sign up. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -31,7 +33,7 @@ export default function LoginPage() {
   return (
     <Paper maw={420} mx="auto" withBorder p="lg" radius="md">
       <Title order={3} mb="md">
-        Login
+        Sign up
       </Title>
       <form onSubmit={handleSubmit}>
         <Stack gap="sm">
@@ -39,10 +41,10 @@ export default function LoginPage() {
           <PasswordInput label="Password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           {error && <Alert color="red">{error}</Alert>}
           <Button type="submit" loading={submitting}>
-            Sign in
+            Create account
           </Button>
-          <Button component={Link} to="/signup" variant="subtle">
-            Need an account? Sign up
+          <Button component={Link} to="/login" variant="subtle">
+            Already have an account? Log in
           </Button>
         </Stack>
       </form>
