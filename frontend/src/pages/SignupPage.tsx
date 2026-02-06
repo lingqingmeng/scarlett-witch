@@ -15,12 +15,43 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const getLuciaClient = () =>
+    (
+      window as Window & {
+        LuciaSDK?: {
+          userInfo?: (userId: string, info: { first_name?: string; last_name?: string; event?: string }) => void;
+        };
+      }
+    ).LuciaSDK;
+
+  const deriveNameParts = (emailAddress: string) => {
+    const localPart = emailAddress.split('@')[0] ?? '';
+    const segments = localPart.split(/[._-]+/).filter(Boolean);
+    return {
+      firstName: segments[0] ?? '',
+      lastName: segments[1] ?? '',
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
       await register({ email, password, role: 'editor' });
+      try {
+        const luciaClient = getLuciaClient();
+        const { firstName, lastName } = deriveNameParts(email);
+        luciaClient?.userInfo?.(email, {
+          first_name: firstName || undefined,
+          last_name: lastName || undefined,
+          event: 'signup',
+        });
+      } catch (error) {
+        // Swallow tracking errors to avoid impacting signup UX.
+        // eslint-disable-next-line no-console
+        console.warn('Lucia tracking failed', error);
+      }
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
