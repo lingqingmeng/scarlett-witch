@@ -6,7 +6,43 @@ export function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const getLuciaClient = () =>
+    (
+      window as Window & {
+        LuciaSDK?: {
+          userInfo?: (
+            userId: string,
+            info: { first_name?: string; last_name?: string; event?: string }
+          ) => void;
+        };
+      }
+    ).LuciaSDK;
+
+  const deriveNameParts = (emailAddress: string) => {
+    const localPart = emailAddress.split('@')[0] ?? '';
+    const segments = localPart.split(/[._-]+/).filter(Boolean);
+    return {
+      firstName: segments[0] ?? '',
+      lastName: segments[1] ?? '',
+    };
+  };
+
   const handleLogout = async () => {
+    try {
+      if (user?.email) {
+        const luciaClient = getLuciaClient();
+        const { firstName, lastName } = deriveNameParts(user.email);
+        luciaClient?.userInfo?.(user.email, {
+          first_name: firstName || undefined,
+          last_name: lastName || undefined,
+          event: 'logout',
+        });
+      }
+    } catch (error) {
+      // Swallow tracking errors to avoid impacting logout UX.
+      // eslint-disable-next-line no-console
+      console.warn('Lucia tracking failed', error);
+    }
     await logout();
     navigate('/');
   };
@@ -38,9 +74,14 @@ export function Layout() {
                   </Button>
                 </>
               ) : (
-                <Button component={Link} to="/login" size="xs">
-                  Login
-                </Button>
+                <>
+                  <Button component={Link} to="/login" size="xs" variant="default">
+                    Login
+                  </Button>
+                  <Button component={Link} to="/signup" size="xs">
+                    Sign up
+                  </Button>
+                </>
               )}
             </Group>
           </Group>

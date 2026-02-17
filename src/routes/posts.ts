@@ -46,13 +46,13 @@ const postSchema = z.object({
 
 router.post('/', requireAuth, async (req, res) => {
   const payload = postSchema.parse(req.body);
-  const post = await savePost(payload, req.user?.id);
+  const post = await savePost(payload, { id: req.user?.id, email: req.user?.email });
   return res.status(201).json({ post });
 });
 
 router.put('/:slug', requireAuth, async (req, res) => {
   const payload = postSchema.partial({ slug: true }).parse({ ...req.body, slug: req.params.slug });
-  const post = await savePost({ ...payload, slug: req.params.slug }, req.user?.id);
+  const post = await savePost({ ...payload, slug: req.params.slug }, { id: req.user?.id, email: req.user?.email });
   return res.json({ post });
 });
 

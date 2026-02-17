@@ -16,6 +16,15 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
+const getLuciaClient = () =>
+  (
+    window as Window & {
+      LuciaSDK?: {
+        userInfo?: (userId: string, info: { contact?: string; event?: string }) => void;
+      };
+    }
+  ).LuciaSDK;
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
@@ -54,6 +63,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await loginApi({ email, password });
     persistTokens(data);
     setUser(data.user);
+    try {
+      // Fire-and-forget login tracking; do not block auth flow on failure.
+      const luciaClient = getLuciaClient();
+      luciaClient?.userInfo?.(data.user.email, {
+        event: 'login',
+      });
+    } catch (error) {
+      // Swallow tracking errors to avoid impacting login UX.
+      // eslint-disable-next-line no-console
+      console.warn('Lucia tracking failed', error);
+    }
   };
 
   const logout = async () => {

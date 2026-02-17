@@ -7,6 +7,16 @@ import { getPost, getRawPost } from '../api/posts';
 import { useAuth } from '../auth/useAuth';
 import { formatDate } from '../utils/date';
 
+const renderAuthor = (authorEmail?: string, authorId?: string | number) => {
+  if (authorEmail) {
+    return authorEmail.split('@')[0];
+  }
+  if (authorId) {
+    return String(authorId);
+  }
+  return null;
+};
+
 export default function PostPage() {
   const { slug } = useParams<{ slug: string }>();
   const { user } = useAuth();
@@ -45,6 +55,11 @@ export default function PostPage() {
           <Text c="dimmed" size="sm">
             {formatDate(published.publishedAt)}
           </Text>
+          {renderAuthor(published.authorEmail, published.authorId) && (
+            <Text c="dimmed" size="sm">
+              · Author: {renderAuthor(published.authorEmail, published.authorId)}
+            </Text>
+          )}
           {published.tags?.map((tag) => (
             <Badge key={tag} variant="light" size="sm">
               {tag}

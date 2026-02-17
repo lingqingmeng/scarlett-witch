@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Alert, Button, Paper, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { register } from '../api/auth';
 import { useAuth } from '../auth/useAuth';
 
-export default function LoginPage() {
+export default function SignupPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,15 +15,47 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const getLuciaClient = () =>
+    (
+      window as Window & {
+        LuciaSDK?: {
+          userInfo?: (userId: string, info: { first_name?: string; last_name?: string; event?: string }) => void;
+        };
+      }
+    ).LuciaSDK;
+
+  const deriveNameParts = (emailAddress: string) => {
+    const localPart = emailAddress.split('@')[0] ?? '';
+    const segments = localPart.split(/[._-]+/).filter(Boolean);
+    return {
+      firstName: segments[0] ?? '',
+      lastName: segments[1] ?? '',
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
+      await register({ email, password, role: 'editor' });
+      try {
+        const luciaClient = getLuciaClient();
+        const { firstName, lastName } = deriveNameParts(email);
+        luciaClient?.userInfo?.(email, {
+          first_name: firstName || undefined,
+          last_name: lastName || undefined,
+          event: 'signup',
+        });
+      } catch (error) {
+        // Swallow tracking errors to avoid impacting signup UX.
+        // eslint-disable-next-line no-console
+        console.warn('Lucia tracking failed', error);
+      }
       await login(email, password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError('Invalid credentials');
+      setError('Unable to sign up. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -31,7 +64,7 @@ export default function LoginPage() {
   return (
     <Paper maw={420} mx="auto" withBorder p="lg" radius="md">
       <Title order={3} mb="md">
-        Login
+        Sign up
       </Title>
       <form onSubmit={handleSubmit}>
         <Stack gap="sm">
@@ -39,10 +72,10 @@ export default function LoginPage() {
           <PasswordInput label="Password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           {error && <Alert color="red">{error}</Alert>}
           <Button type="submit" loading={submitting}>
-            Sign in
+            Create account
           </Button>
-          <Button component={Link} to="/signup" variant="subtle">
-            Need an account? Sign up
+          <Button component={Link} to="/login" variant="subtle">
+            Already have an account? Log in
           </Button>
         </Stack>
       </form>

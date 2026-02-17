@@ -18,7 +18,8 @@ export interface PostMetadata {
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
-  authorId?: string;
+  authorId?: string | number;
+  authorEmail?: string;
 }
 
 export interface PostInput {
@@ -70,6 +71,7 @@ const parsePost = (raw: string, filePath: string): Post => {
     createdAt: data.createdAt ?? new Date().toISOString(),
     updatedAt: data.updatedAt ?? new Date().toISOString(),
     authorId: data.authorId,
+    authorEmail: data.authorEmail,
   };
 
   return { ...metadata, content: content.trim() };
@@ -115,7 +117,7 @@ export const getPostBySlug = async (
 
 export const savePost = async (
   payload: PostInput,
-  authorId?: string
+  author?: { id?: string | number; email?: string }
 ): Promise<Post> => {
   await ensureContentDir();
   const slug = payload.slug ? slugify(payload.slug) : slugify(payload.title);
@@ -144,7 +146,8 @@ export const savePost = async (
         : existingMeta?.publishedAt),
     createdAt: existingMeta?.createdAt ?? timestamp,
     updatedAt: timestamp,
-    authorId: existingMeta?.authorId ?? authorId,
+    authorId: existingMeta?.authorId ?? author?.id,
+    authorEmail: existingMeta?.authorEmail ?? author?.email,
   };
 
   const serializedMeta = Object.fromEntries(

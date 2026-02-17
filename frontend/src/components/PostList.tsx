@@ -3,6 +3,16 @@ import { Link } from 'react-router-dom';
 import type { Post } from '../api/posts';
 import { formatDate } from '../utils/date';
 
+const renderAuthor = (post: Post) => {
+  if (post.authorEmail) {
+    return post.authorEmail.split('@')[0];
+  }
+  if (post.authorId) {
+    return String(post.authorId);
+  }
+  return null;
+};
+
 export function PostList({ posts, showStatus }: { posts: Post[]; showStatus?: boolean }) {
   if (!posts.length) {
     return <Text c="dimmed">No posts yet.</Text>;
@@ -19,9 +29,16 @@ export function PostList({ posts, showStatus }: { posts: Post[]; showStatus?: bo
                   {post.title}
                 </Link>
               </Title>
-              <Text size="sm" c="dimmed">
-                {formatDate(post.publishedAt)}
-              </Text>
+              <Group gap="xs">
+                <Text size="sm" c="dimmed">
+                  {formatDate(post.publishedAt)}
+                </Text>
+                {renderAuthor(post) && (
+                  <Text size="sm" c="dimmed">
+                    · Author: {renderAuthor(post)}
+                  </Text>
+                )}
+              </Group>
             </div>
             {showStatus && post.status && (
               <Badge variant={post.status === 'published' ? 'filled' : 'outline'} color={post.status === 'published' ? 'green' : 'gray'}>

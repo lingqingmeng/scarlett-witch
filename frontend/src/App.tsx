@@ -3,6 +3,7 @@ import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import PostPage from './pages/PostPage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import EditorPage from './pages/EditorPage';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -15,6 +16,7 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="/post/:slug" element={<PostPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/dashboard"
           element={

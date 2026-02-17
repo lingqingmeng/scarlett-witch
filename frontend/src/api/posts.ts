@@ -11,6 +11,10 @@ export type Post = {
   tags?: string[];
   dateRange?: string;
   publishedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  authorId?: string | number;
+  authorEmail?: string;
 };
 
 export type PostInput = Omit<Post, 'slug'> & { slug?: string };
