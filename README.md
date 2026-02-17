@@ -1,5 +1,9 @@
 # Wanda CRM API
 
+Now we use Gitflow
+
+This is Wildergrowth.org now
+
 This repository contains the initial Node.js/TypeScript backend for Wanda's blog and CMS.
 
 ## Requirements
