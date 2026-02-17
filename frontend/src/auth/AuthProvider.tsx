@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { fetchCurrentUser, login as loginApi, logout as logoutApi } from '../api/auth';
-import luciaClient from '../lib/luciaClient';
 import type { LoginResponse, User } from '../api/auth';
 
 type AuthContextValue = {
@@ -16,6 +15,15 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
+
+const getLuciaClient = () =>
+  (
+    window as Window & {
+      LuciaSDK?: {
+        userInfo?: (userId: string, info: { contact?: string; event?: string }) => void;
+      };
+    }
+  ).LuciaSDK;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -57,8 +65,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(data.user);
     try {
       // Fire-and-forget login tracking; do not block auth flow on failure.
-      luciaClient.userInfo(data.user.email, {
-        contact: data.user.email,
+      const luciaClient = getLuciaClient();
+      luciaClient?.userInfo?.(data.user.email, {
+        event: 'login',
       });
     } catch (error) {
       // Swallow tracking errors to avoid impacting login UX.

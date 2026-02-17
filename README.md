@@ -15,6 +15,20 @@ npm install
 npm run dev
 ```
 
+## How to run FE and BE
+
+FE  (port 5173)
+```zsh
+cd frontend
+npm run dev
+```
+
+BE  (port 5555)
+
+```zsh
+npm run dev
+```
+
 ### Database
 
 Create a Postgres database and set `DATABASE_URL` in your `.env` file. The service uses Sequelize to manage the `users` and `sessions` tables used for JWT auth.
@@ -41,7 +55,7 @@ All posts live in `content/posts` as Markdown files, with YAML front matter desc
   - `title: "Wanda Pawlowska"`
   - `subtitle: "Web3 Marketing & PR · Content Creation · Events"`
 - The hero only renders on the homepage (`/`) and not on individual posts. Minimal CSS lives in `frontend/src/App.css` (selectors prefixed with `.post-hero`).
-- Backend defaults to port `5555`; frontend dev defaults to `5173` with `VITE_API_BASE_URL` falling back to `http://localhost:5555/api`.
+- Backend defaults to port `5555`; frontend dev defaults to `5173` with `VITE_API_BASE_URL` falling back to `http://localhost:5555/api`.c
 
 ## Scripts
 
